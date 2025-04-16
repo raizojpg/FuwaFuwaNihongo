@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         // Add chcp 65001 in terminal to see the Japanese characters
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in,"UTF-8");
         Menu menu = Menu.getInstance();
         Dictionary dict = new Dictionary();
 

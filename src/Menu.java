@@ -1,3 +1,5 @@
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Menu {
@@ -30,10 +32,9 @@ public class Menu {
 
     public void displayGuessingGameMenu() {
         System.out.println("=== Guessing Game Menu ===");
-        System.out.println("1. Guess Kanji");
-        System.out.println("2. Guess Word");
-        System.out.println("3. Guess Phrase");
-        System.out.println("4. Back to Main Menu");
+        System.out.println("1. Guess Meaning");
+        System.out.println("2. Guess Term");
+        System.out.println("3. Back to Main Menu");
     }
 
     public void handleMainMenu(Scanner scanner, Dictionary dict) {
@@ -45,7 +46,7 @@ public class Menu {
 
             switch (choice) {
                 case 1 -> handleAddMenu(scanner,dict);
-                case 2 -> handleGuessingGameMenu(scanner);
+                case 2 -> handleGuessingGameMenu(scanner, dict);
                 case 3 -> dict.printAllItems();
                 case 4 -> {
                     System.out.println("Exiting...");
@@ -81,7 +82,7 @@ public class Menu {
         }
     }
 
-    public void handleGuessingGameMenu(Scanner scanner) {
+    public void handleGuessingGameMenu(Scanner scanner, Dictionary dict) {
         while (true) {
             clearConsole();
             displayGuessingGameMenu();
@@ -89,10 +90,9 @@ public class Menu {
             int choice = Integer.parseInt(scanner.nextLine());
 
             switch (choice) {
-                case 1 -> playGuessKanji(scanner);
-                case 2 -> playGuessWord(scanner);
-                case 3 -> playGuessPhrase(scanner);
-                case 4 -> {
+                case 1 -> playGuess(scanner, dict, GuessType.MEANING);
+                case 2 -> playGuess(scanner, dict, GuessType.TERM);
+                case 3 -> {
                     return; 
                 }
                 default -> System.out.println("Invalid option. Please try again.");
@@ -103,21 +103,70 @@ public class Menu {
         }
     }
 
-    public void playGuessKanji(Scanner scanner) {
-        System.out.println("Guess Kanji game is not implemented yet.");
+    public void playGuess(Scanner scanner, Dictionary dict, GuessType type) {
+        if (dict.size() == 0) {
+            System.out.println("No items available for guessing.");
+            return;
+        }
+    
+        List<Concept> concepts = dict.getAllItems();
+        Random random = new Random();
+    
+        int totalGuesses = 0;
+        int correctGuesses = 0;
+        int streak = 0;
+    
+        while (true) {
+            Concept randomConcept = concepts.get(random.nextInt(concepts.size()));
+    
+            totalGuesses++;
+            boolean result = false;
+            switch (type) {
+                case MEANING -> result = randomConcept.playGuessMeaning(scanner);
+                case TERM -> result = randomConcept.playGuessTerm(scanner);
+                default -> {
+                    break;
+                }
+            }
+
+            if (result) {
+                correctGuesses++;
+                streak++;
+            } else {
+                streak = 0;
+            }
+    
+            double guessRate = (double) correctGuesses / totalGuesses * 100;
+            System.out.printf("Current Streak: %d | Correct Guesses: %d/%d (%.2f%%)%n", streak, correctGuesses, totalGuesses, guessRate);
+    
+            System.out.println("Do you want to continue? (press q if you want to exit)");
+            String continueGame = scanner.nextLine().trim().toLowerCase();
+            if (continueGame.equals("q")) {
+                System.out.println("Exiting the guessing game. Final Score:");
+                System.out.printf("Correct Guesses: %d/%d (%.2f%%)%n", correctGuesses, totalGuesses, guessRate);
+                break;
+            }
+        }
     }
 
-    public void playGuessWord(Scanner scanner) {
-        System.out.println("Guess Word game is not implemented yet.");
-    }
+    // public void playGuessKanji(Scanner scanner) {
+    //     System.out.println("Guess Kanji game is not implemented yet.");
+    // }
 
-    public void playGuessPhrase(Scanner scanner) {
-        System.out.println("Guess Phrase game is not implemented yet.");
-    }
+    // public void playGuessWord(Scanner scanner) {
+    //     System.out.println("Guess Word game is not implemented yet.");
+    // }
+
+    // public void playGuessPhrase(Scanner scanner) {
+    //     System.out.println("Guess Phrase game is not implemented yet.");
+    // }
 
     private static void clearConsole() {
         // ANSI escape code to clear the console (works on most terminals)
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
+
+    public enum GuessType {MEANING,TERM}
+    
 }

@@ -36,17 +36,19 @@ public class Dictionary {
         return dict.size();
     }
 
+    public List<Concept> getAllItems(){
+        List<Concept> concepts = new ArrayList<>(dict.values());
+        Collections.sort(concepts);
+        return concepts;
+    }
+
     public void printAllItems() {
         if (dict.isEmpty()) {
             System.out.println("No concepts available.");
             return;
         }
-        
-        List<Concept> concepts = new ArrayList<>(dict.values());
-        Collections.sort(concepts);
-
         System.out.println("=== All Concepts ===");
-        for (Concept concept : concepts) {
+        for (Concept concept : getAllItems()) {
             concept.displayDetails();
             System.out.println("--------------------");
         }
