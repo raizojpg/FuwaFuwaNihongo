@@ -1,45 +1,75 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.function.Function;
 
-public class Dictionary<T extends Comparable<T>> {
-    private Map<String, T> itemMap;
+public class Dictionary {
+    protected Map<String, Concept> dict;
 
     public Dictionary() {
-        this.itemMap = new HashMap<>();
+        this.dict = new HashMap<>();
     }
 
-    public void addItem(String key, T item) {
-        itemMap.put(key, item);
+    public void addItem(String key, Concept item) {
+        dict.put(key, item);
     }
 
-    public T getItem(String key) {
-        return itemMap.get(key);
+    public Concept getItem(String key) {
+        return dict.get(key);
     }
 
     public void removeItem(String key) {
-        itemMap.remove(key);
+        dict.remove(key);
     }
 
     public boolean containsItem(String key) {
-        return itemMap.containsKey(key);
-    }
-
-    public List<T> getAllItems() {
-        List<T> itemList = new ArrayList<>(itemMap.values());
-        Collections.sort(itemList);
-        return itemList;
-    }
-
-    public void printAllItems() {
-        for (T item : itemMap.values()) {
-            System.out.println(item);
-        }
+        return dict.containsKey(key);
     }
 
     public int size() {
-        return itemMap.size();
+        return dict.size();
     }
+
+    public void printAllItems() {
+        if (dict.isEmpty()) {
+            System.out.println("No concepts available.");
+            return;
+        }
+        
+        List<Concept> concepts = new ArrayList<>(dict.values());
+        Collections.sort(concepts);
+
+        System.out.println("=== All Concepts ===");
+        for (Concept concept : concepts) {
+            concept.displayDetails();
+            System.out.println("--------------------");
+        }
+    }
+
+    public void loadFromFile(String filePath, Function<String, Concept> parser) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Concept item = parser.apply(line); 
+                if (item != null) {
+                    addItem(item.getTerm(), item); 
+                }
+            }
+            System.out.println("Entries loaded successfully from " + filePath);
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+    public void loadItem(Scanner scanner, Function<Scanner,Concept> parser){
+        Concept item = parser.apply(scanner); 
+        addItem(item.getTerm(), item); 
+        System.out.println("Concept added: " + item.getTerm() + " (" + item.getMeaning() + ")");
+    }        
 }

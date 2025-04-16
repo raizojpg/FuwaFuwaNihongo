@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public abstract class Concept implements Guessable {
+public abstract class Concept implements Comparable<Concept>, Guessable, Parsable {
     protected String term; // Represents the Japanese concept
     protected String meaning;
     protected String explanation;
@@ -52,8 +52,22 @@ public abstract class Concept implements Guessable {
         return Objects.hash(term, meaning, explanation);
     }
 
-    public abstract void displayDetails();
+    @Override
+    public int compareTo(Concept other) {
+        // Prioritize Kanji first, then Word, then Phrase
+        if (this instanceof Kanji && !(other instanceof Kanji)) {
+            return -1; 
+        } else if (other instanceof Kanji && !(this instanceof Kanji)) {
+            return 1; 
+        } else if (this instanceof Word && !(other instanceof Word)) {
+            return -1; 
+        } else if (other instanceof Word && !(this instanceof Word)) {
+            return 1; 
+        }
+        return this.term.compareTo(other.term); // Alphabetically after term
+    }
 
+    public abstract void displayDetails();
 
     public abstract static class Builder<T extends Builder<T>> {
         protected String term;
@@ -86,4 +100,5 @@ public abstract class Concept implements Guessable {
             }
         }
     }
+
 }

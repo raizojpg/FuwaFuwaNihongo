@@ -1,6 +1,7 @@
 import java.util.Objects;
+import java.util.Scanner;
 
-public final class Kanji extends Concept implements Comparable<Kanji> {
+public final class Kanji extends Concept {
     private Reading reading; 
     private int level;
     private int frequency;       
@@ -75,11 +76,32 @@ public final class Kanji extends Concept implements Comparable<Kanji> {
         System.out.println(toString());
     }
 
-    @Override
-    public int compareTo(Kanji other) {
-        return -Integer.compare(this.level, other.level);
+    public static Kanji parse(String line){
+        String[] parts = line.split(",");
+        if (parts.length < 5) {
+            System.out.println("Invalid Kanji entry: " + line);
+            return null;
+        }
+        Kanji kanji = new Kanji.Builder()
+                .setTerm(parts[0].trim())
+                .setMeaning(parts[1].trim())
+                .setExplanation(parts[2].trim())
+                .setReading(Reading.createReading(parts[3].trim()))
+                .setLevel(Integer.parseInt(parts[4].trim()))
+                .build();
+        return kanji;
     }
 
+    public static Kanji parse(Scanner scanner) {
+        Kanji kanji = new Kanji.Builder()
+                .setTerm(Parsable.prompt(scanner, "Enter Kanji:"))
+                .setMeaning(Parsable.prompt(scanner, "Enter Meaning:"))
+                .setExplanation(Parsable.prompt(scanner, "Enter Explanation:"))
+                .setReading(Reading.createReading(scanner))
+                .setLevel(Integer.parseInt(Parsable.prompt(scanner, "Enter Level (1-5):")))
+                .build();
+        return kanji;
+    }
 
     public static class Builder extends Concept.Builder<Builder> {
         private Reading reading;

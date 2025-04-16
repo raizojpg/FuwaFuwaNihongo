@@ -1,6 +1,7 @@
 import java.util.Objects;
+import java.util.Scanner;
 
-final public class Word extends Concept implements Comparable<Word>, Splitable {
+final public class Word extends Concept implements Splitable {
     private String reading;
     private float difficulty;
     private int frequency;
@@ -81,12 +82,36 @@ final public class Word extends Concept implements Comparable<Word>, Splitable {
         System.out.println(toString());
     }
 
-    @Override
-    public int compareTo(Word other) {
-        return Float.compare(this.difficulty, other.difficulty);
+    public static Word parse(String line){
+        String[] parts = line.split(",");
+        if (parts.length < 7) {
+            System.out.println("Invalid Word entry: " + line);
+            return null;
+        }
+        Word word = new Word.Builder()
+                .setTerm(parts[0].trim())
+                .setMeaning(parts[1].trim())
+                .setExplanation(parts[2].trim())
+                .setReading(parts[3].trim())
+                .setDifficulty(Float.parseFloat(parts[4].trim()))
+                .setFrequency(Integer.parseInt(parts[5].trim()))
+                .setPartOfSpeech(PartOfSpeech.valueOf(parts[6].trim().toUpperCase()))
+                .build();
+        return word;
     }
 
-    
+    public static Word parse(Scanner scanner){
+        Word word = new Word.Builder()
+            .setTerm(Parsable.prompt(scanner, "Enter Word:"))
+            .setMeaning(Parsable.prompt(scanner, "Enter Meaning:"))
+            .setExplanation(Parsable.prompt(scanner, "Enter Explanation:"))
+            .setDifficulty(Float.parseFloat(Parsable.prompt(scanner, "Enter Difficulty (0.0 - 10.0):")))
+            .setFrequency(Integer.parseInt(Parsable.prompt(scanner, "Enter Frequency:")))
+            .setPartOfSpeech(PartOfSpeech.valueOf(Parsable.prompt(scanner, "Enter Part of Speech:").toUpperCase()))
+            .build();
+        return word;
+    }
+
     public static class Builder extends Concept.Builder<Builder> {
         private String reading;
         private float difficulty;
