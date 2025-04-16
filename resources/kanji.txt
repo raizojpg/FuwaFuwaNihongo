@@ -1,0 +1,10 @@
+日,Sun,Represents the sun in Japanese,ニチ-nichi/ジツ-jitsu;ひ-hi;か-ka,5
+月,Moon,Represents the moon in Japanese,ゲツ-getsu;ガツ-gatsu/つき-tsuki,4
+山,Mountain,Represents a mountain,サン-san/やま-yama,3
+川,River,Represents a river,セン-sen/かわ-kawa,2
+火,Fire,Represents fire,カ-ka/ひ-hi,1
+水,Water,Represents water,スイ-sui/みず-mizu,1
+木,Tree,Represents a tree,モク-moku;ボク-boku/き-ki,2
+金,Gold,Represents gold or money,キン-kin;コン-kon/かね-kane,3
+土,Earth,Represents the earth or soil,ド-do;ト-to/つち-tsuchi,2
+空,Sky,Represents the sky,クウ-kuu/そら-sora,4

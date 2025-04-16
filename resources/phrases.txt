@@ -1,0 +1,10 @@
+これはペンです,This is a pen,A simple phrase to indicate an object,kore wa pen desu,1.0
+おはようございます,Good morning,A polite way to greet someone in the morning,ohayou gozaimasu,2.0
+ありがとうございます,Thank you,A polite way to express gratitude,arigatou gozaimasu,2.5
+すみません,Excuse me/I'm sorry,Used to apologize or get someone's attention,sumimasen,1.5
+いらっしゃいませ,Welcome,Used to greet customers in stores or restaurants,irasshaimase,2.0
+よろしくお願いします,Please take care of me,A polite phrase used when introducing oneself,yoroshiku onegaishimasu,3.0
+お元気ですか,How are you?,A polite way to ask about someone's well-being,ogenki desu ka,2.5
+頑張ってください,Please do your best,A phrase used to encourage someone,ganbatte kudasai,3.5
+お疲れ様でした,Thank you for your hard work,A phrase used to show appreciation for someone's effort,otsukaresama deshita,3.0
+行ってきます,I'm leaving,A phrase used when leaving home,itte kimasu,1.0

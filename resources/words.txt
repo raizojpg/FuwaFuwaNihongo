@@ -1,0 +1,10 @@
+走る,to run,A verb meaning to run,hashiru,3.5,20,VERB
+食べる,to eat,A verb meaning to eat,taberu,2.0,15,VERB
+猫,cat,A common domestic animal,neko,1.0,50,NOUN
+速い,fast,Describes something moving quickly,hayai,4.0,10,ADJECTIVE
+美しい,beautiful,Describes something aesthetically pleasing,utsukushii,5.0,5,ADJECTIVE
+彼,he,A pronoun referring to a male,kare,1.5,30,PRONOUN
+そして,and,A conjunction used to connect sentences,soshite,0.5,100,CONJUNCTION
+こんにちは,hello,A common greeting in Japanese,konnichiwa,1.0,200,INTERJECTION
+が,subject marker,A particle used to mark the subject of a sentence,ga,0.0,300,PARTICLE
+です,is,A polite auxiliary verb used for statements,desu,0.0,500,AUXILIARY_VERB
