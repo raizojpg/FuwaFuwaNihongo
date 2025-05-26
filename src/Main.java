@@ -1,4 +1,9 @@
+import entities.Kanji;
+import entities.Phrase;
+import entities.Word;
 import java.util.Scanner;
+import structures.Dictionary;
+import utilities.Menu;
 
 public class Main {
     public static void main(String[] args) {
@@ -7,11 +12,12 @@ public class Main {
         Menu menu = Menu.getInstance();
         Dictionary dict = new Dictionary();
 
-        dict.loadFromFile("../\\resources\\kanji.txt", Kanji::parse);
-        dict.loadFromFile("../\\resources\\words.txt", Word::parse);
-        dict.loadFromFile("../\\resources\\phrases.txt", Phrase::parse);
+        dict.loadFromFile("resources/kanji.txt", Kanji::parse);
+        dict.loadFromFile("resources/words.txt", Word::parse);
+        dict.loadFromFile("resources/phrases.txt", Phrase::parse);
         menu.handleMainMenu(scanner,dict);
 
     }
+
 
 }
