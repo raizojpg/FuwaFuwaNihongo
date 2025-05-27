@@ -15,6 +15,7 @@ public class KanjiDAO {
     public static void main(String[] args) throws Exception {
         KanjiDAO dao = new KanjiDAO();
 
+        // 1. INSERT
         Phonetic onyomi = Phonetic.createPhonetic("ニチ-nichi;ジツ-jitsu");
         Phonetic kunyomi = Phonetic.createPhonetic("ひ-hi;か-ka");
         Reading reading = new Reading(onyomi, kunyomi);
@@ -28,17 +29,48 @@ public class KanjiDAO {
             .setFrequency(100)
             .build();
         dao.insert(kanji);
+        System.out.println("Inserted Kanji.");
 
+        // 2. GET ALL
         List<Kanji> kanjiList = dao.getAll();
+        System.out.println("All Kanji:");
         for (Kanji k : kanjiList) {
             System.out.println(
                 k.getTerm() + " - " +
                 k.getMeaning() + " - " +
-                (k.getReading() != null ? 
-                    "\nOnyomi: " + k.getReading().getOnyomi() + ", Kunyomi: " + k.getReading().getKunyomi()
+                (k.getReading() != null ?
+                    "Onyomi: " + k.getReading().getOnyomi() + ", Kunyomi: " + k.getReading().getKunyomi()
                     : "No Reading"
                 )
             );
+        }
+
+        // 3. GET BY ID 
+        if (!kanjiList.isEmpty()) {
+            int id = 1;
+            Kanji found = dao.getById(id);
+            System.out.println("Get by ID (" + id + "): " +
+                (found != null ? found.getTerm() + " - " + found.getMeaning() : "Not found"));
+            
+            // 4. UPDATE
+            Kanji updatedKanji = new Kanji.Builder()
+                .setTerm("日")
+                .setMeaning("sun; day (updated)")
+                .setExplanation("Represents the sun or a day (updated)")
+                .setReading(reading)
+                .setLevel(2)
+                .setFrequency(200)
+                .build();
+            dao.update(updatedKanji, id);
+            System.out.println("Updated Kanji with ID " + id);
+
+            // 5. DELETE
+            dao.delete(id);
+            System.out.println("Deleted Kanji with ID " + id);
+
+            // Confirm deletion
+            Kanji afterDelete = dao.getById(id);
+            System.out.println("After delete, getById(" + id + "): " + (afterDelete == null ? "Not found" : "Still exists!"));
         }
     }
 
@@ -65,6 +97,29 @@ public class KanjiDAO {
         return list;
     }
 
+    public Kanji getById(int id) throws SQLException, IOException {
+        String sql = "SELECT * FROM kanji WHERE id = ?";
+        try (Connection conn = Config.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int readingId = rs.getInt("reading_id");
+                    Reading reading = readingDAO.getById(readingId);
+                    return new Kanji.Builder()
+                        .setTerm(rs.getString("term"))
+                        .setMeaning(rs.getString("meaning"))
+                        .setExplanation(rs.getString("explanation"))
+                        .setReading(reading)
+                        .setLevel(rs.getInt("level"))
+                        .setFrequency(rs.getInt("frequency"))
+                        .build();
+                }
+            }
+        }
+        return null;
+    }
+
     public void insert(Kanji k) throws SQLException, IOException {
         Reading reading = k.getReading();
         int readingId = readingDAO.insertAndGetId(reading);
@@ -78,6 +133,33 @@ public class KanjiDAO {
             ps.setInt(4, k.getLevel());
             ps.setInt(5, k.getFrequency());
             ps.setInt(6, readingId);
+            ps.executeUpdate();
+        }
+    }
+
+    public void update(Kanji k, int id) throws SQLException, IOException {
+        Reading reading = k.getReading();
+        int readingId = readingDAO.insertAndGetId(reading);
+
+        String sql = "UPDATE kanji SET term=?, meaning=?, explanation=?, level=?, frequency=?, reading_id=? WHERE id=?";
+        try (Connection conn = Config.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, k.getTerm());
+            ps.setString(2, k.getMeaning());
+            ps.setString(3, k.getExplanation());
+            ps.setInt(4, k.getLevel());
+            ps.setInt(5, k.getFrequency());
+            ps.setInt(6, readingId);
+            ps.setInt(7, id);
+            ps.executeUpdate();
+        }
+    }
+
+    public void delete(int id) throws SQLException, IOException {
+        String sql = "DELETE FROM kanji WHERE id = ?";
+        try (Connection conn = Config.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
             ps.executeUpdate();
         }
     }
