@@ -122,4 +122,20 @@ public class ReadingDAO {
             ps.executeUpdate();
         }
     }
+
+    public int getIdByOnyomiKunyomi(String onyomi, String kunyomi) throws Exception {
+        String sql = "SELECT id FROM reading WHERE onyomi = ? AND kunyomi = ?";
+        try (Connection conn = Config.connect();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, onyomi);
+            ps.setString(2, kunyomi);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
+            }
+        }
+        throw new Exception("Reading not found for given onyomi and kunyomi!");
+    }
+
 }

@@ -13,7 +13,7 @@ public class Init {
             System.out.println("Tables created successfully!");
             //insertExamples(stmt);
             printAllTables(stmt);
-            //clearAllTables(stmt);
+            clearAllTables(stmt);
 
         } catch (SQLException | IOException e) {
             e.printStackTrace();

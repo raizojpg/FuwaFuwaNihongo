@@ -137,4 +137,18 @@ public class WordDAO {
             ps.executeUpdate();
         }
     }
+
+    public int getIdByTerm(String term) throws Exception {
+        String sql = "SELECT id FROM word WHERE term = ?";
+        try (Connection conn = Config.connect();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, term);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
+            }
+        }
+        throw new Exception("Word with term '" + term + "' not found!");
+    }
 }

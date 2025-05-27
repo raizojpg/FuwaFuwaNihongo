@@ -138,21 +138,29 @@ public class KanjiDAO {
     }
 
     public void update(Kanji k, int id) throws SQLException, IOException {
-        Reading reading = k.getReading();
-        int readingId = readingDAO.insertAndGetId(reading);
+            int readingId;
+            try {
+                readingId = getReadingIdByKanjiId(id);
+            } catch (Exception e) {
+                throw new IOException("Failed to get old reading ID", e);
+            }
 
-        String sql = "UPDATE kanji SET term=?, meaning=?, explanation=?, level=?, frequency=?, reading_id=? WHERE id=?";
-        try (Connection conn = Config.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, k.getTerm());
-            ps.setString(2, k.getMeaning());
-            ps.setString(3, k.getExplanation());
-            ps.setInt(4, k.getLevel());
-            ps.setInt(5, k.getFrequency());
-            ps.setInt(6, readingId);
-            ps.setInt(7, id);
-            ps.executeUpdate();
-        }
+            Reading reading = k.getReading();
+            readingDAO.update(reading, readingId);
+
+            String sql = "UPDATE kanji SET term=?, meaning=?, explanation=?, level=?, frequency=?, reading_id=? WHERE id=?";
+            try (Connection conn = Config.connect();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, k.getTerm());
+                ps.setString(2, k.getMeaning());
+                ps.setString(3, k.getExplanation());
+                ps.setInt(4, k.getLevel());
+                ps.setInt(5, k.getFrequency());
+                ps.setInt(6, readingId);
+                ps.setInt(7, id);
+                ps.executeUpdate();
+            }
+
     }
 
     public void delete(int id) throws SQLException, IOException {
@@ -163,4 +171,33 @@ public class KanjiDAO {
             ps.executeUpdate();
         }
     }
+
+    public int getIdByTerm(String term) throws Exception {
+        String sql = "SELECT id FROM kanji WHERE term = ?";
+        try (Connection conn = Config.connect();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, term);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
+            }
+        }
+        throw new Exception("Kanji with term '" + term + "' not found!");
+    }
+
+    public int getReadingIdByKanjiId(int kanjiId) throws Exception {
+        String sql = "SELECT reading_id FROM kanji WHERE id = ?";
+        try (Connection conn = Config.connect();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, kanjiId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("reading_id");
+                }
+            }
+        }
+        return -1;
+    }
+
 }

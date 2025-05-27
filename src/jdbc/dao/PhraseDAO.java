@@ -135,4 +135,18 @@ public class PhraseDAO {
             ps.executeUpdate();
         }
     }
+
+    public int getIdByTerm(String term) throws Exception {
+        String sql = "SELECT id FROM phrase WHERE term = ?";
+        try (Connection conn = Config.connect();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, term);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
+            }
+        }
+        throw new Exception("Phrase with term '" + term + "' not found!");
+    }
 }
