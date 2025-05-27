@@ -1,7 +1,6 @@
 package entities;
 import java.util.Objects;
 import java.util.Scanner;
-import structures.Reading;
 import utilities.Utils;
 
 public final class Kanji extends Concept {

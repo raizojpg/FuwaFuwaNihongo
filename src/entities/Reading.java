@@ -1,5 +1,7 @@
-package structures;
+package entities;
 import java.util.Scanner;
+
+import structures.Phonetic;
 
 public class Reading {
     private Phonetic onyomi; 

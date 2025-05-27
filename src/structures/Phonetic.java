@@ -1,6 +1,7 @@
 package structures;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Phonetic {
     private List<Pair<String, String>> readings;
@@ -79,5 +80,11 @@ public class Phonetic {
         }
         return new Phonetic(readings);
     }
+
+    public String toDatabaseString() {
+        return readings.stream()
+                .map(pair -> pair.getFirst() + "-" + pair.getSecond())
+                .collect(Collectors.joining(";"));
+        }
 
 }
