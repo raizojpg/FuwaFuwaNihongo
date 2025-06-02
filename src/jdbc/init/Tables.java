@@ -6,14 +6,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import jdbc.config.Config;
 
-public class Init {
+public class Tables {
     public static void main(String[] args) {
         try (Connection conn = Config.connect(); Statement stmt = conn.createStatement()) {
             createAllTables(stmt);
             System.out.println("Tables created successfully!");
             //insertExamples(stmt);
-            printAllTables(stmt);
-            clearAllTables(stmt);
+            printAllTables();
+            clearAllTables();
 
         } catch (SQLException | IOException e) {
             e.printStackTrace();
@@ -70,7 +70,7 @@ public class Init {
         );
     }
 
-     private static void insertExamples(Statement stmt) throws SQLException {
+    private static void insertExamples(Statement stmt) throws SQLException {
         stmt.executeUpdate(
             "INSERT INTO reading (onyomi, kunyomi) VALUES (" +
             "'オン-meaning1;ヨミ-meaning2', 'くん-meaningA;よみ-meaningB')"
@@ -92,29 +92,38 @@ public class Init {
         );
     }
 
-    private static void printAllTables(Statement stmt) throws SQLException {
-        String[] tables = {"reading", "kanji", "word", "phrase"};
-        for (String table : tables) {
-            System.out.println("\nContents of table: " + table);
-            var rs = stmt.executeQuery("SELECT * FROM " + table);
-            int colCount = rs.getMetaData().getColumnCount();
-            while (rs.next()) {
-                for (int i = 1; i <= colCount; i++) {
-                    System.out.print(rs.getMetaData().getColumnName(i) + "=" + rs.getString(i) + "  ");
+    public static void printAllTables() {
+        try (Connection conn = Config.connect(); Statement stmt = conn.createStatement()) {
+            String[] tables = {"reading", "kanji", "word", "phrase"};
+            for (String table : tables) {
+                System.out.println("\nContents of table: " + table);
+                var rs = stmt.executeQuery("SELECT * FROM " + table);
+                int colCount = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    for (int i = 1; i <= colCount; i++) {
+                        System.out.print(rs.getMetaData().getColumnName(i) + "=" + rs.getString(i) + "  ");
+                    }
+                    System.out.println();
                 }
-                System.out.println();
             }
+        } catch (Exception e) {
+            System.out.println("Error printing all tables: " + e.getMessage());
         }
     }
 
-    private static void clearAllTables(Statement stmt) throws SQLException {
-        // Disable foreign key checks to allow truncating tables with dependencies
-        stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 0");
-        stmt.executeUpdate("TRUNCATE TABLE kanji");
-        stmt.executeUpdate("TRUNCATE TABLE word");
-        stmt.executeUpdate("TRUNCATE TABLE phrase");
-        stmt.executeUpdate("TRUNCATE TABLE reading");
-        stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 1");
+    public static void clearAllTables() {
+        try (Connection conn = Config.connect(); Statement stmt = conn.createStatement()) {
+            // Disable foreign key checks to allow truncating tables with dependencies
+            stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 0");
+            stmt.executeUpdate("TRUNCATE TABLE kanji");
+            stmt.executeUpdate("TRUNCATE TABLE word");
+            stmt.executeUpdate("TRUNCATE TABLE phrase");
+            stmt.executeUpdate("TRUNCATE TABLE reading");
+            stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 1");
+            System.out.println("All tables were cleared");
+        } catch (Exception e) {
+            System.out.println("Error clearing all tables: " + e.getMessage());
+        }
     }
 
 }

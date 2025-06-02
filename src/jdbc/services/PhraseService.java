@@ -19,7 +19,6 @@ public class PhraseService implements CrudService<Phrase> {
 
     @Override
     public void create(Phrase entity) throws Exception {
-        AuditService.getInstance().logAction("PHRASE: create_phrase");
         for (Phrase p : dao.getAll()) {
             if (p.getTerm().equals(entity.getTerm())) {
                 throw new Exception("Phrase with this term already exists!");
@@ -27,42 +26,48 @@ public class PhraseService implements CrudService<Phrase> {
         }
         System.out.println("Inserting Phrase: " + entity.getTerm());
         dao.insert(entity);
+        AuditService.getInstance().logAction("PHRASE: create_phrase");
     }
 
     @Override
     public Phrase read(int id) throws Exception {
-        AuditService.getInstance().logAction("PHRASE: read_phrase");
         System.out.println("Reading Phrase with ID: " + id);
-        return dao.getById(id);
+        Phrase result = dao.getById(id);
+        if (result == null) {
+            throw new Exception("Phrase with ID " + id + " does not exist!");
+        }
+        AuditService.getInstance().logAction("PHRASE: read_phrase");
+        return result;
     }
 
     @Override
     public List<Phrase> readAll() throws Exception {
-        AuditService.getInstance().logAction("PHRASE: read_all_phrases");
         System.out.println("Reading all Phrases");
-        return dao.getAll();
+        List<Phrase> result = dao.getAll();
+        AuditService.getInstance().logAction("PHRASE: read_all_phrases");
+        return result;
     }
 
     @Override
     public void update(Phrase entity, int id) throws Exception {
-        AuditService.getInstance().logAction("PHRASE: update_phrase");
         System.out.println("Updating Phrase: " + entity.getTerm());
-        Phrase existing = dao.getById(id);
-        if (existing == null) {
+        Phrase result = dao.getById(id);
+        if (result == null) {
             throw new Exception("Phrase with ID " + id + " does not exist!");
         }
         dao.update(entity, id);
+        AuditService.getInstance().logAction("PHRASE: update_phrase");
     }
 
     @Override
     public void delete(int id) throws Exception {
-        AuditService.getInstance().logAction("PHRASE: delete_phrase");
         System.out.println("Deleting Phrase with ID: " + id);
-        Phrase existing = dao.getById(id);
-        if (existing == null) {
+        Phrase result = dao.getById(id);
+        if (result == null) {
             throw new Exception("Phrase with ID " + id + " does not exist!");
         }
         dao.delete(id);
+        AuditService.getInstance().logAction("PHRASE: delete_phrase");
     }
 
     public int getIdByTerm(String term) throws Exception {

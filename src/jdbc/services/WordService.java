@@ -19,7 +19,6 @@ public class WordService implements CrudService<Word> {
 
     @Override
     public void create(Word entity) throws Exception {
-        AuditService.getInstance().logAction("WORD: create_word");
         for (Word w : dao.getAll()) {
             if (w.getTerm().equals(entity.getTerm())) {
                 throw new Exception("Word with this term already exists!");
@@ -27,42 +26,48 @@ public class WordService implements CrudService<Word> {
         }
         System.out.println("Inserting Word: " + entity.getTerm());
         dao.insert(entity);
+        AuditService.getInstance().logAction("WORD: create_word");
     }
 
     @Override
     public Word read(int id) throws Exception {
-        AuditService.getInstance().logAction("WORD: read_word");
         System.out.println("Reading Word with ID: " + id);
-        return dao.getById(id);
+        Word result = dao.getById(id);
+        if (result == null) {
+            throw new Exception("Word with ID " + id + " does not exist!");
+        }
+        AuditService.getInstance().logAction("WORD: read_word");
+        return result;
     }
 
     @Override
     public List<Word> readAll() throws Exception {
-        AuditService.getInstance().logAction("WORD: read_all_words");
         System.out.println("Reading all Words");
-        return dao.getAll();
+        List<Word> result = dao.getAll();
+        AuditService.getInstance().logAction("WORD: read_all_words");
+        return result;
     }
 
     @Override
     public void update(Word entity, int id) throws Exception {
-        AuditService.getInstance().logAction("WORD: update_word");
         System.out.println("Updating Word: " + entity.getTerm());
-        Word existing = dao.getById(id);
-        if (existing == null) {
+        Word result = dao.getById(id);
+        if (result == null) {
             throw new Exception("Word with ID " + id + " does not exist!");
         }
         dao.update(entity, id);
+        AuditService.getInstance().logAction("WORD: update_word");
     }
 
     @Override
     public void delete(int id) throws Exception {
-        AuditService.getInstance().logAction("WORD: delete_word");
         System.out.println("Deleting Word with ID: " + id);
-        Word existing = dao.getById(id);
-        if (existing == null) {
+        Word result = dao.getById(id);
+        if (result == null) {
             throw new Exception("Word with ID " + id + " does not exist!");
         }
         dao.delete(id);
+        AuditService.getInstance().logAction("WORD: delete_word");
     }
 
     public int getIdByTerm(String term) throws Exception {

@@ -1,6 +1,9 @@
 package structures;
 
 import entities.Concept;
+import entities.Kanji;
+import entities.Phrase;
+import entities.Word;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
+import jdbc.services.KanjiService;
+import jdbc.services.PhraseService;
+import jdbc.services.WordService;
 
 public class Dictionary {
     protected Map<String, Concept> dict;
@@ -77,4 +83,26 @@ public class Dictionary {
         addItem(item.getTerm(), item); 
         System.out.println("Concept added: " + item.getTerm() + " (" + item.getMeaning() + ")");
     }        
+
+    public void loadFromDatabase() {
+        dict.clear();
+        try {
+            List<Kanji> kanjiList = KanjiService.getInstance().readAll();
+            for (Kanji k : kanjiList) {
+                addItem(k.getTerm(), k);
+            }
+            List<Word> wordList = WordService.getInstance().readAll();
+            for (Word w : wordList) {
+                addItem(w.getTerm(), w);
+            }
+            List<Phrase> phraseList = PhraseService.getInstance().readAll();
+            for (Phrase p : phraseList) {
+                addItem(p.getTerm(), p);
+            }
+            System.out.println("Entries loaded successfully from database!");
+        } catch (Exception e) {
+            System.out.println("Error loading from database: " + e.getMessage());
+        }
+    }
+
 }

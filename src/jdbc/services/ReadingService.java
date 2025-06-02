@@ -19,7 +19,6 @@ public class ReadingService implements CrudService<Reading> {
 
     @Override
     public void create(Reading entity) throws Exception {
-        AuditService.getInstance().logAction("READING: create_reading");
         for (Reading r : dao.getAll()) {
             if (r.getOnyomi().toDatabaseString().equals(entity.getOnyomi().toDatabaseString()) &&
                 r.getKunyomi().toDatabaseString().equals(entity.getKunyomi().toDatabaseString())) {
@@ -28,42 +27,48 @@ public class ReadingService implements CrudService<Reading> {
         }
         System.out.println("Inserting Reading.");
         dao.insertAndGetId(entity);
+        AuditService.getInstance().logAction("READING: create_reading");
     }
 
     @Override
     public Reading read(int id) throws Exception {
-        AuditService.getInstance().logAction("READING: read_reading");
         System.out.println("Reading Reading with ID: " + id);
-        return dao.getById(id);
+        Reading result = dao.getById(id);
+        if (result == null) {
+            throw new Exception("Reading with ID " + id + " does not exist!");
+        }
+        AuditService.getInstance().logAction("READING: read_reading");
+        return result;
     }
 
     @Override
     public List<Reading> readAll() throws Exception {
-        AuditService.getInstance().logAction("READING: read_all_readings");
         System.out.println("Reading all Readings");
-        return dao.getAll();
+        List<Reading> result = dao.getAll();
+        AuditService.getInstance().logAction("READING: read_all_readings");
+        return result;
     }
 
     @Override
     public void update(Reading entity, int id) throws Exception {
-        AuditService.getInstance().logAction("READING: update_reading");
         System.out.println("Updating Reading with ID: " + id);
-        Reading existing = dao.getById(id);
-        if (existing == null) {
+        Reading result = dao.getById(id);
+        if (result == null) {
             throw new Exception("Reading with ID " + id + " does not exist!");
         }
         dao.update(entity, id);
+        AuditService.getInstance().logAction("READING: update_reading");
     }
 
     @Override
     public void delete(int id) throws Exception {
-        AuditService.getInstance().logAction("READING: delete_reading");
         System.out.println("Deleting Reading with ID: " + id);
-        Reading existing = dao.getById(id);
-        if (existing == null) {
+        Reading result = dao.getById(id);
+        if (result == null) {
             throw new Exception("Reading with ID " + id + " does not exist!");
         }
         dao.delete(id);
+        AuditService.getInstance().logAction("READING: delete_reading");
     }
 
     public int getIdByOnyomiKunyomi(String onyomi, String kunyomi) throws Exception {
