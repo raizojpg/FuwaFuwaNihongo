@@ -1,8 +1,8 @@
 package jdbc.services;
 
 import entities.Reading;
-import jdbc.dao.ReadingDAO;
 import java.util.List;
+import jdbc.dao.ReadingDAO;
 
 public class ReadingService implements CrudService<Reading> {
     private static ReadingService instance;
@@ -19,6 +19,7 @@ public class ReadingService implements CrudService<Reading> {
 
     @Override
     public void create(Reading entity) throws Exception {
+        AuditService.getInstance().logAction("READING: create_reading");
         for (Reading r : dao.getAll()) {
             if (r.getOnyomi().toDatabaseString().equals(entity.getOnyomi().toDatabaseString()) &&
                 r.getKunyomi().toDatabaseString().equals(entity.getKunyomi().toDatabaseString())) {
@@ -31,18 +32,21 @@ public class ReadingService implements CrudService<Reading> {
 
     @Override
     public Reading read(int id) throws Exception {
+        AuditService.getInstance().logAction("READING: read_reading");
         System.out.println("Reading Reading with ID: " + id);
         return dao.getById(id);
     }
 
     @Override
     public List<Reading> readAll() throws Exception {
+        AuditService.getInstance().logAction("READING: read_all_readings");
         System.out.println("Reading all Readings");
         return dao.getAll();
     }
 
     @Override
     public void update(Reading entity, int id) throws Exception {
+        AuditService.getInstance().logAction("READING: update_reading");
         System.out.println("Updating Reading with ID: " + id);
         Reading existing = dao.getById(id);
         if (existing == null) {
@@ -53,6 +57,7 @@ public class ReadingService implements CrudService<Reading> {
 
     @Override
     public void delete(int id) throws Exception {
+        AuditService.getInstance().logAction("READING: delete_reading");
         System.out.println("Deleting Reading with ID: " + id);
         Reading existing = dao.getById(id);
         if (existing == null) {

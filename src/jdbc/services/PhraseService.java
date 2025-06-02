@@ -1,8 +1,8 @@
 package jdbc.services;
 
 import entities.Phrase;
-import jdbc.dao.PhraseDAO;
 import java.util.List;
+import jdbc.dao.PhraseDAO;
 
 public class PhraseService implements CrudService<Phrase> {
     private static PhraseService instance;
@@ -19,6 +19,7 @@ public class PhraseService implements CrudService<Phrase> {
 
     @Override
     public void create(Phrase entity) throws Exception {
+        AuditService.getInstance().logAction("PHRASE: create_phrase");
         for (Phrase p : dao.getAll()) {
             if (p.getTerm().equals(entity.getTerm())) {
                 throw new Exception("Phrase with this term already exists!");
@@ -30,18 +31,21 @@ public class PhraseService implements CrudService<Phrase> {
 
     @Override
     public Phrase read(int id) throws Exception {
+        AuditService.getInstance().logAction("PHRASE: read_phrase");
         System.out.println("Reading Phrase with ID: " + id);
         return dao.getById(id);
     }
 
     @Override
     public List<Phrase> readAll() throws Exception {
+        AuditService.getInstance().logAction("PHRASE: read_all_phrases");
         System.out.println("Reading all Phrases");
         return dao.getAll();
     }
 
     @Override
     public void update(Phrase entity, int id) throws Exception {
+        AuditService.getInstance().logAction("PHRASE: update_phrase");
         System.out.println("Updating Phrase: " + entity.getTerm());
         Phrase existing = dao.getById(id);
         if (existing == null) {
@@ -52,6 +56,7 @@ public class PhraseService implements CrudService<Phrase> {
 
     @Override
     public void delete(int id) throws Exception {
+        AuditService.getInstance().logAction("PHRASE: delete_phrase");
         System.out.println("Deleting Phrase with ID: " + id);
         Phrase existing = dao.getById(id);
         if (existing == null) {

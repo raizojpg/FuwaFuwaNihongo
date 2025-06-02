@@ -2,9 +2,9 @@ package jdbc.services;
 
 import entities.Kanji;
 import entities.Reading;
+import java.util.List;
 import jdbc.dao.KanjiDAO;
 import jdbc.dao.ReadingDAO;
-import java.util.List;
 
 public class KanjiService implements CrudService<Kanji> {
     private static KanjiService instance;
@@ -22,6 +22,7 @@ public class KanjiService implements CrudService<Kanji> {
 
     @Override
     public void create(Kanji entity) throws Exception {
+        AuditService.getInstance().logAction("KANJI: create_kanji");
         for (Kanji k : dao.getAll()) {
             if (k.getTerm().equals(entity.getTerm())) {
                 throw new Exception("Kanji with this term already exists!");
@@ -33,18 +34,21 @@ public class KanjiService implements CrudService<Kanji> {
 
     @Override
     public Kanji read(int id) throws Exception {
+        AuditService.getInstance().logAction("KANJI: read_kanji");
         System.out.println("Reading Kanji with ID: " + id);
         return dao.getById(id);
     }
 
     @Override
     public List<Kanji> readAll() throws Exception {
+        AuditService.getInstance().logAction("KANJI: read_all_kanji");
         System.out.println("Reading all Kanji");
         return dao.getAll();
     }
 
     @Override
     public void update(Kanji entity, int id) throws Exception {
+        AuditService.getInstance().logAction("KANJI: update_kanji");
         System.out.println("Updating Kanji: " + entity.getTerm());
         Kanji existing = dao.getById(id);
         if (existing == null) {
@@ -55,6 +59,7 @@ public class KanjiService implements CrudService<Kanji> {
 
     @Override
     public void delete(int id) throws Exception {
+        AuditService.getInstance().logAction("KANJI: delete_kanji");
         System.out.println("Deleting Kanji with ID: " + id);
         Kanji existing = dao.getById(id);
         if (existing == null) {
