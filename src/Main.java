@@ -7,7 +7,7 @@ public class Main {
         // Add chcp 65001 in terminal to see the Japanese characters
         Scanner scanner = new Scanner(System.in,"UTF-8");
         Menu menu = Menu.getInstance();
-        Dictionary dict = new Dictionary();
+        Dictionary dict = new Dictionary(); 
 
         menu.handleMainMenu(scanner,dict);
     }

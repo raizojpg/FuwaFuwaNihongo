@@ -27,11 +27,14 @@ public interface Splitable {
     default void display() {
         List<String> kanjiList = splitIntoKanji();
         if (!kanjiList.isEmpty()){
-            StringBuilder sb = new StringBuilder("I am composed of the following Kanji:\n");
+            StringBuilder sb = new StringBuilder("\nI am composed of the following Kanji:\n");
             for (String kanji : kanjiList) {
                 sb.append(kanji).append("\n");
             }
             System.out.println(sb.toString());
+        }
+        else{
+            System.out.println("\nI am not composed of any kanji, I am just kana.");
         }
     }   
 }

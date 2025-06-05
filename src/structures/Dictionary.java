@@ -17,6 +17,7 @@ import java.util.function.Function;
 import jdbc.services.KanjiService;
 import jdbc.services.PhraseService;
 import jdbc.services.WordService;
+import utilities.Splitable;
 
 public class Dictionary {
     protected Map<String, Concept> dict;
@@ -62,6 +63,22 @@ public class Dictionary {
             System.out.println("--------------------");
         }
     }
+
+    public void printSplitableItems() {
+        System.out.println("=== Splitable Items ===");
+        int count = 0;
+        for (Concept item : getAllItems()) {
+            if (item instanceof Splitable splitable) {
+                System.out.println("[" + (++count) + "] " + item);
+                splitable.display();
+                System.out.println("--------------------");
+            }
+        }
+        if (count == 0) {
+            System.out.println("No splitable items found.");
+        }
+    }
+
 
     public void loadFromFile(String filePath, Function<String, Concept> parser) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {

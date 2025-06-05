@@ -339,7 +339,8 @@ public class Menu {
         System.out.println("=== Dictionary Menu ===");
         System.out.println("1. Load Items from Database");
         System.out.println("2. Print All Concepts");
-        System.out.println("3. Back to Main Menu");
+        System.out.println("3. Print Composed Concepts");
+        System.out.println("4. Back to Main Menu");
     }
 
     public void handleDictionaryMenu(Scanner scanner, Dictionary dict) {
@@ -359,7 +360,8 @@ public class Menu {
                     }
                 }
                 case 2 -> dict.printAllItems();
-                case 3 -> { return; }
+                case 3 -> dict.printSplitableItems();
+                case 4 -> { return; }
                 default -> System.out.println("Invalid option. Please try again.");
             }
 
@@ -443,17 +445,6 @@ public class Menu {
         }
     }
 
-    // public void playGuessKanji(Scanner scanner) {
-    //     System.out.println("Guess Kanji game is not implemented yet.");
-    // }
-
-    // public void playGuessWord(Scanner scanner) {
-    //     System.out.println("Guess Word game is not implemented yet.");
-    // }
-
-    // public void playGuessPhrase(Scanner scanner) {
-    //     System.out.println("Guess Phrase game is not implemented yet.");
-    // }
 
     private static void clearConsole() {
         // ANSI escape code to clear the console
